@@ -1,4 +1,4 @@
-package fgin
+package lee
 
 import (
 	"fmt"
@@ -8,11 +8,13 @@ import (
 )
 
 const (
-	_ = iota
-	ONE
+	Zero = iota
+	One
+	Two
+	EmptyString = ""
 )
 
-type HandleFunc func(w http.ResponseWriter, r *http.Request)
+type HandleFunc func(ctx Context)
 
 type Engine struct {
 	router map[string]HandleFunc
@@ -25,7 +27,7 @@ func Ins() *Engine {
 //路由添加
 func (e *Engine) addRoute(method, route string, handle HandleFunc) {
 	var str strings.Builder
-	str.Grow(len(method) + len(route) + ONE)
+	str.Grow(len(method) + len(route) + One)
 
 	_, err := str.WriteString(method)
 	if err != nil {
@@ -55,7 +57,7 @@ func (e *Engine) POST(route string, handle HandleFunc) {
 //启动服务
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var key strings.Builder
-	key.Grow(len(r.Method) + len(r.URL.Path) + ONE)
+	key.Grow(len(r.Method) + len(r.URL.Path) + One)
 
 	_, err := key.WriteString(r.Method)
 	if err != nil {
@@ -71,6 +73,7 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if handle, ok := e.router[key.String()]; ok {
+
 		handle(w, r)
 	} else {
 		fmt.Fprintf(w, "PATH %s 404 NOT FOUND", key.String())
