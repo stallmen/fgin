@@ -2,16 +2,31 @@ package main
 
 import (
 	"fmt"
-	"gee/lee"
+	"gee/fastest"
 	"net/http"
+	"reflect"
 )
 
 func main() {
-	f := lee.Ins()
-	f.GET("/", func(w http.ResponseWriter, r *http.Request) {
-		test("1","2","3")
-		fmt.Println(r.URL.Query())
+	f := fastest.New()
+	f.GET("/", func(c *fastest.Context) {
+		c.String(http.StatusOK,"hehe")
 	})
+
+	f.GET("/xx", func(c *fastest.Context) {
+		x := c.Get("id")
+		fmt.Println(x,reflect.TypeOf(x))
+		c.Json(200, map[string]string{
+			"id":"123",
+			"name":"lisi",
+		})
+	})
+
+	f.POST("/hehe", func(c *fastest.Context) {
+		x := c.Post("name")
+		fmt.Println(x,reflect.TypeOf(x))
+	})
+
 
 	f.RUN(":8888")
 }
