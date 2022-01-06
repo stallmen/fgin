@@ -5,10 +5,8 @@ import (
 )
 
 const (
-	Zero = iota
+	_ = iota
 	One
-	Two
-	EmptyString = ""
 )
 
 type HandleFunc func(ctx *Context)
@@ -34,12 +32,13 @@ func (e *Engine) POST(route string, handle HandleFunc) {
 	e.addRoute("POST", route, handle)
 }
 
-//启动服务
+//接管实现
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c := NewContext(w,r)
 	e.router.handle(c)
 }
 
+// RUN 启动服务
 func (e *Engine) RUN(addr string) (err error) {
 	return http.ListenAndServe(addr, e)
 }

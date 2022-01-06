@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gee/fastest"
+	"log"
 	"net/http"
 	"reflect"
 )
@@ -28,9 +29,5 @@ func main() {
 	})
 
 
-	f.RUN(":8888")
-}
-
-func test(args ...string)  {
-	fmt.Println(args)
+	log.Fatal(f.RUN(":8888"))
 }

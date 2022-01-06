@@ -30,18 +30,17 @@ func (c *Context) Get(arg string) string {
 	return strings.TrimSpace(c.Request.URL.Query().Get(arg))
 }
 
-//post参数获取
+// Post post参数获取
 func (c *Context) Post(arg string) string {
 	return strings.TrimSpace(c.Request.PostFormValue(arg))
 }
 
-
-//请求头设置
+// SetHeader 请求头设置
 func (c *Context) SetHeader(key,value string)  {
 	c.Response.Header().Set(key,value)
 }
 
-//状态码设置
+// Status 状态码设置
 func (c *Context) Status(code int)  {
 	c.StatusCode = code
 	c.Response.WriteHeader(code)
@@ -52,10 +51,12 @@ func (c *Context) Status(code int)  {
 func (c *Context) String(code int,str string)  {
 	c.SetHeader("Content-Type","text/plain")
 	c.Status(code)
-	c.Response.Write([]byte(str))
+	if _,err := c.Response.Write([]byte(str));err != nil {
+		http.Error(c.Response,err.Error(),http.StatusInternalServerError)
+	}
 }
 
-//json返回
+// Json json返回
 func (c *Context) Json(code int,v interface{})  {
 	c.SetHeader("Content-Type","application/json")
 	c.Status(code)
